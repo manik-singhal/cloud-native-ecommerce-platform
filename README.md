@@ -24,36 +24,11 @@ where Git acts as the single source of truth for the cluster state.
 
 ---
 
-```mermaid
-graph TD
-    subgraph "Public Internet"
-        User((User)) -->|HTTPS| ALB[AWS Application Load Balancer]
-    end
+## Architecture Diagram
 
-    subgraph "AWS EKS Cluster"
-        ALB -->|Ingress| Proxy[frontend-proxy]
-        Proxy --> Services{Microservices}
+![Architecture](docs/architecture.png)
 
-        subgraph "Microservices"
-            Services --> Product[product-catalog]
-            Services --> Cart[cart]
-            Services --> Checkout[checkout]
-            Cart --> Valkey[(Valkey Cache)]
-        end
-
-        subgraph "Observability"
-            Services -.->|OTLP| OTEL[OpenTelemetry Collector]
-            OTEL --> Jaeger[Jaeger Traces]
-            OTEL --> Prometheus[Prometheus Metrics]
-        end
-    end
-
-    subgraph "Infrastructure (Terraform)"
-        VPC[VPC & Subnets]
-        IAM[IAM Roles]
-        EKS[EKS Control Plane]
-    end
-```
+---
 
 ## Request Flow
 
