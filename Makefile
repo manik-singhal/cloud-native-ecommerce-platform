@@ -126,7 +126,7 @@ run-tracetesting:
 
 .PHONY: generate-protobuf
 generate-protobuf:
-	./scripts/ide-gen-proto.sh
+	./ide-gen-proto.sh
 
 .PHONY: generate-kubernetes-manifests
 generate-kubernetes-manifests:
@@ -144,7 +144,7 @@ generate-kubernetes-manifests:
 
 .PHONY: docker-generate-protobuf
 docker-generate-protobuf:
-	./scripts/docker-gen-proto.sh
+	./docker-gen-proto.sh
 
 .PHONY: clean
 clean:
