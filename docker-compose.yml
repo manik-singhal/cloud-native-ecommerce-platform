@@ -22,7 +22,7 @@ services:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-accounting
     container_name: accounting
     build:
-      context: ./
+      context: ./src/accounting
       dockerfile: ${ACCOUNTING_DOCKERFILE}
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-accounting
@@ -51,7 +51,7 @@ services:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-ad
     container_name: ad
     build:
-      context: ./
+      context: ./src/ad
       dockerfile: ${AD_DOCKERFILE}
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-ad
@@ -87,7 +87,7 @@ services:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-cart
     container_name: cart
     build:
-      context: ./
+      context: ./src/cart
       dockerfile: ${CART_DOCKERFILE}
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-cart
@@ -122,7 +122,7 @@ services:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-checkout
     container_name: checkout
     build:
-      context: ./
+      context: ./src/checkout
       dockerfile: ${CHECKOUT_DOCKERFILE}
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-checkout
@@ -175,7 +175,7 @@ services:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-currency
     container_name: currency
     build:
-      context: ./
+      context: ./src/currency
       dockerfile: ${CURRENCY_DOCKERFILE}
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-currency
@@ -206,7 +206,7 @@ services:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-email
     container_name: email
     build:
-      context: ./
+      context: ./src/email
       dockerfile: ${EMAIL_DOCKERFILE}
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-email
@@ -236,7 +236,7 @@ services:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-fraud-detection
     container_name: fraud-detection
     build:
-      context: ./
+      context: ./src/fraud-detection
       dockerfile: ${FRAUD_DOCKERFILE}
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-fraud-detection
@@ -269,7 +269,7 @@ services:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-frontend
     container_name: frontend
     build:
-      context: ./
+      context: ./src/frontend
       dockerfile: ${FRONTEND_DOCKERFILE}
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-frontend
@@ -330,7 +330,7 @@ services:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-frontend-proxy
     container_name: frontend-proxy
     build:
-      context: ./
+      context: ./src/frontend-proxy
       dockerfile: ${FRONTEND_PROXY_DOCKERFILE}
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-frontend-proxy
@@ -383,7 +383,7 @@ services:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-image-provider
     container_name: image-provider
     build:
-      context: ./
+      context: ./src/image-provider
       dockerfile: ${IMAGE_PROVIDER_DOCKERFILE}
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-image-provider
@@ -410,7 +410,7 @@ services:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-load-generator
     container_name: load-generator
     build:
-      context: ./
+      context: ./src/load-generator
       dockerfile: ${LOAD_GENERATOR_DOCKERFILE}
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-load-generator
@@ -449,7 +449,7 @@ services:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-payment
     container_name: payment
     build:
-      context: ./
+      context: ./src/payment
       dockerfile: ${PAYMENT_DOCKERFILE}
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-payment
@@ -481,7 +481,7 @@ services:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-product-catalog
     container_name: product-catalog
     build:
-      context: ./
+      context: ./src/product-catalog
       dockerfile: ${PRODUCT_CATALOG_DOCKERFILE}
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-product-catalog
@@ -516,7 +516,7 @@ services:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-quote
     container_name: quote
     build:
-      context: ./
+      context: ./src/quote
       dockerfile: ${QUOTE_DOCKERFILE}
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-quote
@@ -546,7 +546,7 @@ services:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-recommendation
     container_name: recommendation
     build:
-      context: ./
+      context: ./src/recommendation
       dockerfile: ${RECOMMENDATION_DOCKERFILE}
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-recommendation
@@ -582,7 +582,7 @@ services:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-shipping
     container_name: shipping
     build:
-      context: ./
+      context: ./src/shipping
       dockerfile: ${SHIPPING_DOCKERFILE}
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-shipping
@@ -642,7 +642,7 @@ services:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-flagd-ui
     container_name: flagd-ui
     build:
-      context: ./
+      context: ./src/flagd-ui
       dockerfile: ${FLAGD_UI_DOCKERFILE}
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-flagd-ui
@@ -674,7 +674,7 @@ services:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-kafka
     container_name: kafka
     build:
-      context: ./
+      context: ./src/kafka
       dockerfile: ${KAFKA_DOCKERFILE}
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-kafka
@@ -709,7 +709,7 @@ services:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-postgresql
     container_name: postgresql
     build:
-      context: ./
+      context: ./src/postgresql
       dockerfile: ${POSTGRES_DOCKERFILE}
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-postgresql
@@ -854,7 +854,7 @@ services:
   opensearch:
     container_name: opensearch
     build:
-      context: ./
+      context: /src/opensearch
       dockerfile: ${OPENSEARCH_DOCKERFILE}
       cache_from:
         - ${IMAGE_NAME}:${IMAGE_VERSION}-opensearch
