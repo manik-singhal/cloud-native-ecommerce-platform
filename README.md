@@ -22,17 +22,19 @@ Continuous Integration (CI) is handled using GitHub Actions, while
 Continuous Deployment (CD) follows GitOps principles using Argo CD,
 where Git acts as the single source of truth for the cluster state.
 
+---
+
 ```mermaid
 graph TD
     subgraph "Public Internet"
         User((User)) -->|HTTPS| ALB[AWS Application Load Balancer]
     end
 
-    subgraph "AWS EKS Cluster (ap-south-1)"
+    subgraph "AWS EKS Cluster"
         ALB -->|Ingress| Proxy[frontend-proxy]
-        Proxy -->|gRPC/HTTP| Services{Microservices}
+        Proxy --> Services{Microservices}
 
-        subgraph "src/ Microservices"
+        subgraph "Microservices"
             Services --> Product[product-catalog]
             Services --> Cart[cart]
             Services --> Checkout[checkout]
@@ -40,19 +42,18 @@ graph TD
         end
 
         subgraph "Observability"
-            Services -.->|OTLP| OTEL[OTEL Collector]
+            Services -.->|OTLP| OTEL[OpenTelemetry Collector]
             OTEL --> Jaeger[Jaeger Traces]
             OTEL --> Prometheus[Prometheus Metrics]
         end
     end
 
     subgraph "Infrastructure (Terraform)"
-        VPC[VPC/Subnets]
+        VPC[VPC & Subnets]
         IAM[IAM Roles]
         EKS[EKS Control Plane]
-    end```
-
----
+    end
+```
 
 ## Request Flow
 
@@ -113,8 +114,9 @@ This pattern can be reused for other microservices in the platform.
 Debugging typically starts with:
 ```bash
 kubectl get pods
-kubectl describe pod
-kubectl logs```
+kubectl describe pod <pod-name>
+kubectl logs <pod-name>
+```
 
 ## Cost Control Strategy
 
