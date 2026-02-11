@@ -109,7 +109,7 @@ cd terraform && terraform apply
 Deploy application:
 kubectl apply -f kubernetes/manifests/
 
-## Destroy
+Destroy:
 cd terraform && terraform destroy
 
 ## Documentation
