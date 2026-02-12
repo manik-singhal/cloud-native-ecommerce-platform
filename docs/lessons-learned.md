@@ -98,6 +98,19 @@ Before assuming the pipeline logic is broken.
 
 ---
 
+## 5. Kubernetes: Resource Requests & Limits Are About Fairness, Not Perfection
+
+### What I learned
+Resource requests and limits exist to protect the cluster, not to perfectly optimize an application. Requests inform the scheduler about expected resource usage, while limits prevent a single Pod from consuming more than its fair share.
+
+### Why this mattered
+In shared clusters, missing or incorrect limits can allow one service to impact others on the same node. I observed that when limits are set too low, Pods may get **OOMKilled** even though the application logic itself is correct. Kubernetes is enforcing platform constraints, not evaluating application health.
+
+### How this changed my thinking
+In this project, resource requests and limits are defined across all manifests to reflect production intent. However, I did not aggressively tune them because this is a demo workload, not a traffic-tested system. The real value was understanding that resource configuration is about **reducing blast radius and maintaining cluster stability**, not chasing perfect numbers.
+
+---
+
 ## Final Reflection
 
 The biggest takeaway from this project is that DevOps is not about knowing
