@@ -83,7 +83,7 @@ Sustained high CPU usage causes request latency, CPU throttling, and can trigger
 
 ## Failure Validation
 
-To validate the observability setup actually detects real failures, I intentionally restricted the frontend pod memory limit from 512Mi to 128Mi. This was designed to trigger OOMKill events.
+To validate the observability setup actually detects real failures, I intentionally restricted the frontend pod memory limit from 250Mi to 50Mi. This was designed to trigger OOMKill events.
 
 ### During Failure
 
@@ -130,6 +130,6 @@ After reverting the memory limit back to 512Mi:
 ## What I'd Add in Production
 
 - **Alertmanager** for routing alerts to Slack or PagerDuty instead of just Prometheus UI
-- **Distributed tracing** with Jaeger or Tempo to track requests across all three services
+- **Distributed tracing** with Jaeger or Tempo to track requests across all the micro-services
 - **SLO-based alerts** focused on user-facing metrics (error rate, latency) rather than just resource usage
 - **Log aggregation** with Loki to correlate metrics with application logs during incidents
