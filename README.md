@@ -1,4 +1,4 @@
-# Cloud-Native E-Commerce Platform
+i# Cloud-Native E-Commerce Platform
 
 A production-grade microservices platform running on AWS EKS with full observability, GitOps deployment, and infrastructure as code.
 
