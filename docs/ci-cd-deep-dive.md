@@ -1,68 +1,55 @@
 # CI/CD Deep Dive
 
-This document explains how CI and CD are designed and used in this project,
-and why they are intentionally separated.
-
-The goal of this setup is reliability, controlled change, and easy recovery
-when something goes wrong.
+This document explains why CI and CD are separated in this project and how that separation makes deployments safer and easier to debug.
 
 ---
 
-## Why CI ≠ CD
+## Why CI and CD Are Separate
 
 CI and CD solve different problems.
 
 **CI (Continuous Integration)** answers:
-> “Is this change buildable and safe to promote?”
+> "Is this change safe to build and package?"
 
 **CD (Continuous Deployment)** answers:
-> “Should this change be running in the cluster right now?”
+> "Should this be running in the cluster right now?"
 
-Combining both into a single pipeline increases risk because:
-- CI needs access to source code and registries
-- CD needs access to the cluster
-- Failures become harder to isolate
+Combining them into one pipeline increases risk. CI needs access to source code and image registries. CD needs access to the cluster. When both live in the same pipeline, credential leaks become more dangerous and failures become harder to isolate.
 
-In this project, CI and CD are separated to reduce blast radius and make
-failures easier to reason about.
+Separating them reduces the blast radius. If CI is compromised, it can't touch the running cluster. If CD goes down, CI can still build and validate changes.
 
 ---
 
-## Why GitHub Actions Is Used for CI
+## Why GitHub Actions for CI
 
-GitHub Actions is well-suited for CI because it:
-- Integrates directly with pull requests and commits
-- Provides fast feedback on every change
-- Is ephemeral and stateless
-- Does not need access to the Kubernetes cluster
+GitHub Actions runs outside the cluster and integrates directly with the repository. This makes it well-suited for CI because:
 
-In this project, GitHub Actions is responsible for:
-- Building Docker images
-- Running basic checks
-- Pushing images to the container registry
+- It triggers automatically on pull requests and commits
+- It provides fast feedback on every code change
+- It's ephemeral—no persistent state to manage
+- It doesn't need Kubernetes credentials
 
-Once CI completes, its job is done.
-It does not deploy anything.
+In this project, GitHub Actions:
+- Builds Docker images
+- Runs code quality checks
+- Pushes images to the container registry
 
-This keeps CI simple and safe.
+Once CI finishes, it's done. It doesn't deploy anything. This keeps the pipeline simple and the cluster isolated.
 
 ---
 
-## Why Argo CD Is Used for CD
+## Why ArgoCD for CD
 
-Argo CD is used for CD because it:
-- Runs inside the Kubernetes cluster
-- Continuously compares Git state with cluster state
-- Automatically reconciles drift
-- Supports controlled rollbacks
+ArgoCD runs inside the Kubernetes cluster. It continuously watches Git for changes and reconciles the cluster state to match.
 
-Unlike push-based CD, Argo CD is **pull-based**.
-The cluster pulls desired state from Git instead of Git pushing changes into the cluster.
+Unlike push-based CD (where pipelines push changes into the cluster), ArgoCD is **pull-based**. The cluster pulls the desired state from Git rather than having Git push into the cluster.
 
 This means:
 - Cluster credentials never leave the cluster
-- Deployment logic stays close to the runtime environment
-- Manual changes in the cluster are detected and corrected
+- Deployment logic runs close to where services actually run
+- Manual changes to the cluster are detected and corrected automatically
+
+ArgoCD also supports rollbacks through Git history, which makes recovery straightforward.
 
 ---
 
@@ -70,65 +57,82 @@ This means:
 
 ### If CI Fails
 
-- No new image is built or promoted
-- Kubernetes and running services are unaffected
-- The system remains stable
+When CI fails:
+- No new image gets built
+- No changes are promoted
+- Running services in Kubernetes are completely unaffected
 
-CI failures block **change**, not **availability**.
+CI failures block **new changes**, not **availability**. The system stays stable.
 
 ---
 
-### If CD Is Paused or Argo CD Is Down
+### If CD Fails or ArgoCD Goes Down
 
-- Running applications continue to work normally
-- No new changes are deployed
+When CD stops working:
+- Applications that are already running continue to work normally
+- New deployments stop
 - The cluster stops reconciling drift
 
-This is safe by design.
-CD failure does not bring the system down — it only freezes deployment.
+This is safe by design. CD failure doesn't bring the system down—it just pauses new deployments until CD is restored.
 
 ---
 
-### If Git Is Wrong
+### If Git Contains Bad Configuration
 
-- Argo CD deploys incorrect configuration
-- Issues surface quickly and consistently across environments
+If someone commits broken configuration to Git:
+- ArgoCD deploys it (because Git is the source of truth)
+- The issue becomes visible immediately
 
-Because Git is the single source of truth:
-- The root cause is always visible
-- Rollback is a `git revert`
-- There is no hidden state to hunt for
+Because all changes flow through Git:
+- The root cause is always traceable to a commit
+- Rollback is a simple `git revert`
+- There's no hidden cluster state to debug
 
-Wrong Git is recoverable.
-Unknown cluster state is not.
+Bad Git config is recoverable. Unknown cluster state is not.
 
 ---
 
-## Why GitOps Reduces Blast Radius
+## Why GitOps Reduces Risk
 
-GitOps reduces blast radius by:
-- Forcing all changes through version control
-- Making deployments deterministic
-- Preventing manual, untracked changes
+GitOps reduces risk by:
+- Requiring all changes to go through version control
+- Making deployments deterministic (same input = same result)
+- Preventing manual, untracked changes to the cluster
 - Enabling fast rollback using Git history
 
-Instead of debugging “what changed in the cluster,”
-the question becomes:
-> “Which commit introduced this behavior?”
+Instead of asking "what changed in the cluster," the question becomes:
+> "Which commit caused this behavior?"
 
-This keeps failures:
-- Smaller
-- Easier to diagnose
-- Easier to reverse
+This makes failures:
+- Easier to trace
+- Faster to diagnose
+- Simpler to reverse
+
+---
+
+## Validation
+
+The CI/CD separation was validated through actual usage.
+
+### CI Pipeline
+
+GitHub Actions successfully builds images, runs checks, and pushes to the registry without any cluster access.
+
+![CI Pipeline Execution](../screenshots/cicd/github-actions-ci.png)
+
+### CD Sync
+
+ArgoCD continuously monitors Git and keeps the cluster synchronized with the desired state.
+
+![ArgoCD Sync Status](../screenshots/cicd/argocd-app-sync.png)
 
 ---
 
 ## Summary
 
-- CI validates and packages changes
+- CI builds and validates changes
 - CD deploys and maintains cluster state
 - Git is the single source of truth
 - Failures are isolated by design
 
-This separation makes the system easier to operate,
-debug, and trust in production-like environments.
+This separation makes the system easier to operate and debug.
