@@ -226,15 +226,3 @@ Application is accessible via custom domain configured through Route53.
     ├── helm/            # Deployment lifecycle
     └── cicd/            # Pipeline execution
 ```
-
----
-
-## Project Background
-
-This project was built to demonstrate production-grade DevOps practices for Kubernetes-based microservices. The architectural patterns were learned from a comprehensive DevOps course, which I extended with:
-
-- Complete observability layer with custom dashboards and failure validation
-- Helm packaging with lifecycle management
-- Comprehensive documentation and testing
-
-The observability layer, failure validation, deployment strategy, and production thinking represent my independent work building on foundational patterns.
